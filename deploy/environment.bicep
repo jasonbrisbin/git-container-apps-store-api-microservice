@@ -12,7 +12,7 @@ resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2020-03
       searchVersion: 1
     }
     sku: {
-      name: 'Free'
+      name: 'PerGB2018'
     }
   })
 }
