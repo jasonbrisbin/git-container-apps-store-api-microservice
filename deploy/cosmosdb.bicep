@@ -74,6 +74,7 @@ resource accountName_resource 'Microsoft.DocumentDB/databaseAccounts@2021-01-15'
     consistencyPolicy: consistencyPolicy[defaultConsistencyLevel]
     locations: locations
     databaseAccountOfferType: 'Standard'
+    enableFreeTier: true
   }
 }
 
