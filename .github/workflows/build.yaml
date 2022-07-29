@@ -82,6 +82,14 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+      
+      - name: Register Providers
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az provider register --namespace Microsoft.DocumentDB
+            az provider register --namespace Microsoft.OperationalInsights
+            az provider register --namespace Microsoft.ApiManagement
 
       - name: Deploy bicep
         uses: azure/CLI@v1
