@@ -6,5 +6,8 @@
             "front_matter_title": ""
         }
     },
-    "python.defaultInterpreterPath": "/usr/bin/python3"
+    "python.defaultInterpreterPath": "/usr/bin/python3",
+    "yaml.schemas": {
+        "https://json.schemastore.org/github-action.json": "file:///home/jason/git/container-apps-store-api-microservice/.github/workflows/build.yaml"
+    }
 }
