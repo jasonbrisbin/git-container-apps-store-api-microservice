@@ -91,6 +91,9 @@ jobs:
             az provider register --namespace Microsoft.DocumentDB
             az provider register --namespace Microsoft.OperationalInsights
             az provider register --namespace Microsoft.ApiManagement
+            az provider register --namespace microsoft.app
+            az provider register --namespace microsoft.insights
+            az provider register --namespace microsoft.servicelinker
 
       - name: Deploy bicep
         uses: azure/CLI@v1

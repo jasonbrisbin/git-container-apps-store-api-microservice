@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=./build.yaml
+name: Build and Deploy
+on:
+  workflow_dispatch:
+
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}      
+
+      - name: Delete ${{ secrets.RESOURCE_GROUP_DEV }}
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az group delete -g ${{ secrets.RESOURCE_GROUP_DEV }} --yes          
