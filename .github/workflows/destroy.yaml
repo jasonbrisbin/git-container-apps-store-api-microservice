@@ -15,14 +15,38 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}      
       - id: rgPresent
         run: |
-          if [ "$(az group list --query "[?name=='maxam-dev']" --output tsv)" == "" ]; then
+          if [ "$(az apim list --resource-group ${{ secrets.RESOURCE_GROUP_DEV }} --output json)" == "" ]; then
             echo ::set-output name=resourceGroupIsPresent::false
           else
             echo ::set-output name=resourceGroupIsPresent::true
+            if [ "$(az group list --query "[?name=='${{ secrets.RESOURCE_GROUP_DEV }}']" --output tsv)" == "" ]; then
+              echo ::set-output name=apimIsPresent::false
+            else
+              echo ::set-output name=apimIsPresent::true
+              echo ::set-output name=apimResourceId::$(az apim list --resource-group ${{ secrets.RESOURCE_GROUP_DEV }} --output json --only-show-errors|jq -r '.[]|.id')
+            fi
           fi
       - name: Delete ${{ secrets.RESOURCE_GROUP_DEV }}
         if: steps.rgPresent.outputs.resourceGroupIsPresent
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az group delete -g ${{ secrets.RESOURCE_GROUP_DEV }} --yes          
+            az group delete -g ${{ secrets.RESOURCE_GROUP_DEV }} --yes
+
+      - name: Remove Soft Delete APIM
+        if: steps.rgPresent.outputs.apimIsPresent
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az group delete -g ${{ secrets.RESOURCE_GROUP_DEV }} --yes
+            $token = Get-AzAccessToken
+
+            $request = @{
+                Method = 'DELETE'
+                Uri    = "https://management.azure.com/${{steps.rgPresent.outputs.apimResourceId}}?api-version=2021-08-01"
+                Headers = @{
+                    Authorization = "Bearer $($token.Token)"
+                }
+            }
+
+            Invoke-RestMethod @request
