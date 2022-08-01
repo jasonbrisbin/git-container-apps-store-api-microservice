@@ -15,12 +15,12 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
       - id: rgPresent
         run: |
-          if [ "$(az apim list --resource-group ${{ secrets.RESOURCE_GROUP_DEV }} --output json)" == "" ]; then
+          if [ "$(az group show --name ${{ secrets.RESOURCE_GROUP_DEV }} --output tsv)" == "" ]; then
             echo ::set-output name=resourceGroupIsPresent::false
             echo ::set-output name=apimIsPresent::false
           else
             echo ::set-output name=resourceGroupIsPresent::true
-            if [ "$(az group list --query "[?name=='${{ secrets.RESOURCE_GROUP_DEV }}']" --output tsv)" == "" ]; then
+            if [ "$(az apim list --query "[?name=='${{ secrets.RESOURCE_GROUP_DEV }}']" --output tsv)" == "" ]; then
               echo ::set-output name=apimIsPresent::false
             else
               echo ::set-output name=apimIsPresent::true
