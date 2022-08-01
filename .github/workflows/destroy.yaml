@@ -13,7 +13,8 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
-      - id: rgPresent
+      - name: Check existing resources
+        id: rgPresent
         run: |
           if [ "$(az group show --name ${{ secrets.RESOURCE_GROUP_DEV }} --output tsv)" == "" ]; then
             echo ::set-output name=resourceGroupIsPresent::false
@@ -26,14 +27,14 @@ jobs:
               echo ::set-output name=apimIsPresent::true
             fi
           fi
-      - name: Delete ${{ secrets.RESOURCE_GROUP_DEV }}
+      - name: Delete resources
         if: steps.rgPresent.outputs.resourceGroupIsPresent
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az group delete -g ${{secrets.AZURE_SUBSCRIPTION_ID_DEV}} --yes
+            az group delete --name ${{secrets.RESOURCE_GROUP_DEV}} --yes
 
-      - name: Remove Soft Delete APIM
+      - name: Purge APIM
         if: steps.rgPresent.outputs.apimIsPresent
         uses: azure/CLI@v1
         with:
