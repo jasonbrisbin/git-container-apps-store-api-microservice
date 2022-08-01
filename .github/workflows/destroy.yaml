@@ -12,7 +12,8 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}      
+          creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID_DEV }}      
       - id: rgPresent
         run: |
           if [ "$(az apim list --resource-group ${{ secrets.RESOURCE_GROUP_DEV }} --output json)" == "" ]; then
@@ -38,9 +39,10 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
+            az account set --subscription 
             az group delete -g ${{ secrets.RESOURCE_GROUP_DEV }} --yes
             $token = Get-AzAccessToken
-
+            
             $request = @{
                 Method = 'DELETE'
                 Uri    = "https://management.azure.com${{steps.rgPresent.outputs.apimResourceId}}?api-version=2021-08-01"
