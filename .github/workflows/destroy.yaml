@@ -24,7 +24,7 @@ jobs:
               echo ::set-output name=apimIsPresent::false
             else
               echo ::set-output name=apimIsPresent::true
-              echo ::set-output name=apimResourceId::$(az apim list --resource-group ${{ secrets.RESOURCE_GROUP_DEV }} --output json --only-show-errors|jq -r '.[]|.id')
+              echo ::set-output name=apimResourceId::$(az rest --method GET --url "https://management.azure.com/subscriptions/${{secrets.AZURE_SUBSCRIPTION_ID_DEV}}/providers/Microsoft.ApiManagement/deletedservices?api-version=2021-08-01" --query "value[].properties.serviceId" --output json)
             fi
           fi
       - name: Delete ${{ secrets.RESOURCE_GROUP_DEV }}
@@ -48,5 +48,4 @@ jobs:
                     Authorization = "Bearer $($token.Token)"
                 }
             }
-
             Invoke-RestMethod @request
