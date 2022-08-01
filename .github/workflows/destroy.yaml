@@ -17,6 +17,7 @@ jobs:
         run: |
           if [ "$(az apim list --resource-group ${{ secrets.RESOURCE_GROUP_DEV }} --output json)" == "" ]; then
             echo ::set-output name=resourceGroupIsPresent::false
+            echo ::set-output name=apimIsPresent::false
           else
             echo ::set-output name=resourceGroupIsPresent::true
             if [ "$(az group list --query "[?name=='${{ secrets.RESOURCE_GROUP_DEV }}']" --output tsv)" == "" ]; then
@@ -37,9 +38,7 @@ jobs:
         if: steps.rgPresent.outputs.apimIsPresent
         uses: azure/CLI@v1
         with:
-          inlineScript: |
-            az account set --subscription 
-            az group delete -g ${{ secrets.RESOURCE_GROUP_DEV }} --yes
+          inlineScript: |            
             $token = Get-AzAccessToken
             
             $request = @{
