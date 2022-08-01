@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=./build.yaml
-name: Destory
+name: Destroy
 on:
   workflow_dispatch:
   schedule:
@@ -43,7 +43,7 @@ jobs:
 
             $request = @{
                 Method = 'DELETE'
-                Uri    = "https://management.azure.com/${{steps.rgPresent.outputs.apimResourceId}}?api-version=2021-08-01"
+                Uri    = "https://management.azure.com${{steps.rgPresent.outputs.apimResourceId}}?api-version=2021-08-01"
                 Headers = @{
                     Authorization = "Bearer $($token.Token)"
                 }
