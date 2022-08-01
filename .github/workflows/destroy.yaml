@@ -40,7 +40,7 @@ jobs:
         with:
           inlineScript: |            
             $token = Get-AzAccessToken            
-            $apim = (az rest --method GET --url "https://management.azure.com/subscriptions/${{secrets.AZURE_SUBSCRIPTION_ID_DEV}}/providers/Microsoft.ApiManagement/deletedservices?api-version=2021-08-01" --query "value[]" --output json|convertfrom-json)| select-object id,@{l="resourceid";e={$_.properties.serviceId}}|where-object{$_.resourceId -like "*${{secrets.AZURE_SUBSCRIPTION_ID_DEV}}*"} 
+            $apim = (az rest --method GET --url "https://management.azure.com/subscriptions/${{secrets.AZURE_SUBSCRIPTION_ID_DEV}}/providers/Microsoft.ApiManagement/deletedservices?api-version=2021-08-01" --query "value[]" --output json|convertfrom-json)| select-object id,@{l="resourceid";e={$_.properties.serviceId}}|where-object{$_.resourceId -like "*${{secrets.RESOURCE_GROUP_DEV}}*"} 
             $request = @{
                 Method = 'DELETE'
                 Uri    = "https://management.azure.com$($apim.id)?api-version=2021-08-01"
