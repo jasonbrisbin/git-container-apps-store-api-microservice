@@ -18,12 +18,12 @@ jobs:
       - name: Delete resources
         shell: pwsh
         run: |
-            $fuckThisShit=az group list --query "[?name=='${{secrets.RESOURCE_GROUP_DEV}}']" --output tsv
+            $fuckThisShit= Get-AzResourceGroup -name ${{secrets.RESOURCE_GROUP_DEV}}
             if([string]::IsNullOrEmpty($fuckThisShit)){
               write-host "Group ${{secrets.RESOURCE_GROUP_DEV}} was not found"
             }
             else{
-              az group delete --name ${{secrets.RESOURCE_GROUP_DEV}} --yes
+              Remove-AzResourceGroup -name ${{secrets.RESOURCE_GROUP_DEV}} -Force
             }
             
       - name: Purge APIM
