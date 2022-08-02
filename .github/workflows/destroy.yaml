@@ -20,16 +20,16 @@ jobs:
           echo "resource groups start"
           az group list --query "[?name=='${{ secrets.RESOURCE_GROUP_DEV }}'].id" --output tsv
           echo "resource groups end"
-          if [ "$(az group list --query "[?name=='${{ secrets.RESOURCE_GROUP_DEV }}'].id" --output tsv)" == "" ]; then
-            echo ::set-output name=resourceGroupIsPresent::false
-            echo ::set-output name=apimIsPresent::false
-          else
+          if [ "$(az group list --query "[?name=='${{ secrets.RESOURCE_GROUP_DEV }}'].id" --output tsv)" ]; then
             echo ::set-output name=resourceGroupIsPresent::true
             if [ "$(az apim list --query "[?name=='${{ secrets.RESOURCE_GROUP_DEV }}']" --output tsv)" == "" ]; then
               echo ::set-output name=apimIsPresent::false
             else
               echo ::set-output name=apimIsPresent::true
             fi
+          else
+            echo ::set-output name=resourceGroupIsPresent::false
+            echo ::set-output name=apimIsPresent::false          
           fi
       - name: Delete resources
         if: steps.rgPresent.outputs.resourceGroupIsPresent
