@@ -36,7 +36,7 @@ jobs:
             az group delete --name ${{secrets.RESOURCE_GROUP_DEV}} --yes
 
       - name: Purge APIM
-        if: steps.rgPresent.outputs.apimIsPresent
+        #if: steps.rgPresent.outputs.apimIsPresent
         uses: azure/powershell@v1
         with:
           azPSVersion: "latest"
