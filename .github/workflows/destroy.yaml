@@ -16,7 +16,10 @@ jobs:
           enable-AzPSSession: true
       - name: Check existing resources
         id: rgPresent
-        run: |        
+        run: |
+          echo "resource groups start"
+          az group list --query "[?name=='${{ secrets.RESOURCE_GROUP_DEV }}'].id" --output tsv
+          echo "resource groups end"
           if [ "$(az group list --query "[?name=='${{ secrets.RESOURCE_GROUP_DEV }}'].id" --output tsv)" == "" ]; then
             echo ::set-output name=resourceGroupIsPresent::false
             echo ::set-output name=apimIsPresent::false
