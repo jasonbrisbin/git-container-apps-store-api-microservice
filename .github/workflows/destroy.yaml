@@ -19,8 +19,10 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            $groupIsPresent = az group list --query "[].name" --output tsv | Select-String ${{secrets.RESOURCE_GROUP_DEV}}
-            if($groupIsPresent){
+            if([string]::IsNullOrEmpty((az group list --query "[?name=='${{secrets.RESOURCE_GROUP_DEV}}']" --output tsv))){
+              echo "Group ${{secrets.RESOURCE_GROUP_DEV}} was not found"
+            }
+            else{
               az group delete --name ${{secrets.RESOURCE_GROUP_DEV}} --yes
             }
             
