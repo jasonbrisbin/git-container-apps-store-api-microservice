@@ -18,8 +18,10 @@ jobs:
       - name: Delete resources
         uses: azure/CLI@v1
         with:
+          azcliversion: 2.36.0
           inlineScript: |
-            if([string]::IsNullOrEmpty((az group list --query "[?name=='${{secrets.RESOURCE_GROUP_DEV}}']" --output tsv))){
+            $fuckThisShit=az group list --query "[?name=='${{secrets.RESOURCE_GROUP_DEV}}']" --output tsv
+            if([string]::IsNullOrEmpty($fuckThisShit)){
               write-host "Group ${{secrets.RESOURCE_GROUP_DEV}} was not found"
             }
             else{
@@ -29,7 +31,7 @@ jobs:
       - name: Purge APIM
         uses: azure/powershell@v1
         with:
-          azPSVersion: "latest"
+          azPSVersion: ""
           inlineScript: |           
             $token = Get-AzAccessToken   
             $headers= @{Authorization = "Bearer $($token.Token)"}         
