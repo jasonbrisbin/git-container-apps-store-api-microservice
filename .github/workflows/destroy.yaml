@@ -19,7 +19,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            $groupIsPresent = az group list --query "[].name" --output tsv|select-string ${{secrets.RESOURCE_GROUP_DEV}}
+            $groupIsPresent = az group list --query "[].name" --output tsv | Select-String ${{secrets.RESOURCE_GROUP_DEV}}
             if($groupIsPresent){
               az group delete --name ${{secrets.RESOURCE_GROUP_DEV}} --yes
             }
