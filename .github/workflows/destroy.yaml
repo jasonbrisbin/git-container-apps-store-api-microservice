@@ -20,7 +20,7 @@ jobs:
           echo "resource groups start"
           az group list --query "[?name=='${{ secrets.RESOURCE_GROUP_DEV }}'].id" --output tsv
           echo "resource groups end"
-          if [ "$(az group list --query "[?name=='${{ secrets.RESOURCE_GROUP_DEV }}'].id" --output tsv)" ]; then
+          if [[ "$(az group list --query "[?name=='${{ secrets.RESOURCE_GROUP_DEV }}'].id" --output tsv)" ]]; then
             echo ::set-output name=resourceGroupIsPresent::true
             if [ "$(az apim list --query "[?name=='${{ secrets.RESOURCE_GROUP_DEV }}']" --output tsv)" == "" ]; then
               echo ::set-output name=apimIsPresent::false
