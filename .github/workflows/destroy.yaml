@@ -20,7 +20,7 @@ jobs:
         with:
           inlineScript: |
             if([string]::IsNullOrEmpty((az group list --query "[?name=='${{secrets.RESOURCE_GROUP_DEV}}']" --output tsv))){
-              echo "Group ${{secrets.RESOURCE_GROUP_DEV}} was not found"
+              write-host "Group ${{secrets.RESOURCE_GROUP_DEV}} was not found"
             }
             else{
               az group delete --name ${{secrets.RESOURCE_GROUP_DEV}} --yes
