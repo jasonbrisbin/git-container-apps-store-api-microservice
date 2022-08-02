@@ -14,32 +14,17 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
           enable-AzPSSession: true
-      - name: Check existing resources
-        id: rgPresent
-        run: |
-          echo "resource groups start"
-          az group list --query "[?name=='${{ secrets.RESOURCE_GROUP_DEV }}'].id" --output tsv
-          echo "resource groups end"
-          if [[ "$(az group list --query "[?name=='${{ secrets.RESOURCE_GROUP_DEV }}'].id" --output tsv)" ]]; then
-            echo ::set-output name=resourceGroupIsPresent::true
-            if [ "$(az apim list --query "[?name=='${{ secrets.RESOURCE_GROUP_DEV }}']" --output tsv)" == "" ]; then
-              echo ::set-output name=apimIsPresent::false
-            else
-              echo ::set-output name=apimIsPresent::true
-            fi
-          else
-            echo ::set-output name=resourceGroupIsPresent::false
-            echo ::set-output name=apimIsPresent::false          
-          fi
+    
       - name: Delete resources
-        if: steps.rgPresent.outputs.resourceGroupIsPresent
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az group delete --name ${{secrets.RESOURCE_GROUP_DEV}} --yes
-
+            $groupIsPresent = az group list --query "[].name" --output tsv|select-string ${{secrets.RESOURCE_GROUP_DEV}}
+            if($groupIsPresent){
+              az group delete --name ${{secrets.RESOURCE_GROUP_DEV}} --yes
+            }
+            
       - name: Purge APIM
-        #if: steps.rgPresent.outputs.apimIsPresent
         uses: azure/powershell@v1
         with:
           azPSVersion: "latest"
@@ -47,11 +32,13 @@ jobs:
             $token = Get-AzAccessToken   
             $headers= @{Authorization = "Bearer $($token.Token)"}         
             $apim = (invoke-restmethod --method GET --uri "https://management.azure.com/subscriptions/${{secrets.AZURE_SUBSCRIPTION_ID_DEV}}/providers/Microsoft.ApiManagement/deletedservices?api-version=2021-08-01" -headers $headers).value | select-object id,@{l="resourceid";e={$_.properties.serviceId}}|where-object{$_.resourceId -like "*${{secrets.RESOURCE_GROUP_DEV}}*"} 
-            $request = @{
-                Method = 'DELETE'
-                Uri    = "https://management.azure.com$($apim.id)?api-version=2021-08-01"
-                Headers = @{
-                    Authorization = "Bearer $($token.Token)"
-                }
+            if($apim){
+              $request = @{
+                  Method = 'DELETE'
+                  Uri    = "https://management.azure.com$($apim.id)?api-version=2021-08-01"
+                  Headers = @{
+                      Authorization = "Bearer $($token.Token)"
+                  }
+              }
+              Invoke-RestMethod @request
             }
-            Invoke-RestMethod @request
