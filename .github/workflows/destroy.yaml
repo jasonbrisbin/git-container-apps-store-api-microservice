@@ -16,10 +16,8 @@ jobs:
           enable-AzPSSession: true
     
       - name: Delete resources
-        uses: azure/CLI@v1
-        with:
-          azcliversion: 2.36.0
-          inlineScript: |
+        shell: pwsh
+        run: |
             $fuckThisShit=az group list --query "[?name=='${{secrets.RESOURCE_GROUP_DEV}}']" --output tsv
             if([string]::IsNullOrEmpty($fuckThisShit)){
               write-host "Group ${{secrets.RESOURCE_GROUP_DEV}} was not found"
