@@ -1,4 +1,5 @@
 # yaml-language-server: $schema=./build.yaml
+# Excludes DNS zones and records by design
 name: Destroy
 on:
   workflow_dispatch:
@@ -46,4 +47,4 @@ jobs:
                   }
               }
               Invoke-RestMethod @request
-            }
+            }        
