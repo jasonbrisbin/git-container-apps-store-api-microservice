@@ -18,7 +18,7 @@ jobs:
       - name: Delete resources
         uses: azure/powershell@v1
         with:
-          azPSVersion: ""
+          azPSVersion: "latest"
           inlineScript: |   
             $fuckThisShit= Get-AzResourceGroup -name ${{secrets.RESOURCE_GROUP_DEV}}
             if([string]::IsNullOrEmpty($fuckThisShit)){
@@ -31,7 +31,7 @@ jobs:
       - name: Purge APIM
         uses: azure/powershell@v1
         with:
-          azPSVersion: ""
+          azPSVersion: "latest"
           inlineScript: |           
             $token = Get-AzAccessToken   
             $headers= @{Authorization = "Bearer $($token.Token)"}         
