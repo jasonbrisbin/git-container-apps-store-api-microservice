@@ -20,12 +20,12 @@ jobs:
         with:
           azPSVersion: "latest"
           inlineScript: |   
-            $fuckThisShit= Get-AzResourceGroup -name ${{secrets.RESOURCE_GROUP_DEV}}
-            if([string]::IsNullOrEmpty($fuckThisShit)){
-              write-host "Group ${{secrets.RESOURCE_GROUP_DEV}} was not found"
+            $rg=Get-AzResourceGroup -name ${{secrets.RESOURCE_GROUP_DEV}} -errorAction SilentlyContinue
+            if($rg){
+              Remove-AzResourceGroup -name ${{secrets.RESOURCE_GROUP_DEV}} -Force
             }
             else{
-              Remove-AzResourceGroup -name ${{secrets.RESOURCE_GROUP_DEV}} -Force
+              write-host "Group ${{secrets.RESOURCE_GROUP_DEV}} was not found"
             }
             
       - name: Purge APIM
