@@ -1,5 +1,5 @@
 # yaml-language-server: $schema=./build.yaml
-name: Build and Deploy
+name: Foundation
 on:
   workflow_call:
     inputs:
