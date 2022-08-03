@@ -134,9 +134,10 @@ jobs:
             deployApim:true
           failOnStdErr: false
   deploy-dns:
+    if: false
     environment:
       name: production
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest    
     needs: [build]
     steps:
       - name: Checkout repository
