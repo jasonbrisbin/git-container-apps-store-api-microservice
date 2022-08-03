@@ -136,6 +136,7 @@ jobs:
             containerRegistryPassword:${{ secrets.PACKAGES_TOKEN }} 
             deployApim:true
           failOnStdErr: false
+          
   deploy-dns:
     if: false
     environment:

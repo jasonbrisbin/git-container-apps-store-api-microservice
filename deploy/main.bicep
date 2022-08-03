@@ -98,6 +98,7 @@ resource stateDaprComponent 'Microsoft.App/managedEnvironments/daprComponents@20
     secrets: [
       {
         name: 'masterkey'
+        
         value: cosmosdb.outputs.primaryMasterKey
       }
     ]
