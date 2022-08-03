@@ -16,7 +16,7 @@ jobs:
           enable-AzPSSession: true
     
       - name: Delete resources
-        shell: pwsh
+        shell: azure/powershell@v1
         run: |
             $fuckThisShit= Get-AzResourceGroup -name ${{secrets.RESOURCE_GROUP_DEV}}
             if([string]::IsNullOrEmpty($fuckThisShit)){
