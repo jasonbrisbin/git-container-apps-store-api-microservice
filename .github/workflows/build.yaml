@@ -125,11 +125,11 @@ jobs:
           template: ./deploy/main.bicep
           parameters:
             minReplicas=0 
-            nodeImage='${{ needs.build.outputs.containerImage-node }}' 
+            nodeImage=${{ needs.build.outputs.containerImage-node }}
             nodePort=3000 
-            pythonImage='${{ needs.build.outputs.containerImage-python }}' 
+            pythonImage=${{ needs.build.outputs.containerImage-python }}
             pythonPort=5000 
-            goImage='${{ needs.build.outputs.containerImage-go }}' 
+            goImage=${{ needs.build.outputs.containerImage-go }}
             goPort=8050 
             containerRegistry=${{ env.REGISTRY }} 
             containerRegistryUsername=${{ github.actor }} 
