@@ -16,8 +16,10 @@ jobs:
           enable-AzPSSession: true
     
       - name: Delete resources
-        shell: azure/powershell@v1
-        run: |
+        uses: azure/powershell@v1
+        with:
+          azPSVersion: ""
+          inlineScript: |   
             $fuckThisShit= Get-AzResourceGroup -name ${{secrets.RESOURCE_GROUP_DEV}}
             if([string]::IsNullOrEmpty($fuckThisShit)){
               write-host "Group ${{secrets.RESOURCE_GROUP_DEV}} was not found"
