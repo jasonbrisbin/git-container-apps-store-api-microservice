@@ -72,6 +72,7 @@ jobs:
         run: echo "::set-output name=image-${{ matrix.services.imageName }}::${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.services.imageName }}:sha-$(git rev-parse --short HEAD)" | tr '[:upper:]' '[:lower:]'
 
   deploy:
+    environment: development
     runs-on: ubuntu-latest
     needs: [build]
     steps:
@@ -81,7 +82,7 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
       
       - name: Register Providers
         uses: azure/CLI@v1
@@ -99,8 +100,8 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            az group create -g ${{ secrets.RESOURCE_GROUP_DEV }} -l centralus
-            az deployment group create -g ${{ secrets.RESOURCE_GROUP_DEV }} -f ./deploy/main.bicep \
+            az group create -g ${{ secrets.RESOURCE_GROUP }} -l centralus
+            az deployment group create -g ${{ secrets.RESOURCE_GROUP }} -f ./deploy/main.bicep \
              -p \
                 minReplicas=0 \
                 nodeImage='${{ needs.build.outputs.containerImage-node }}' \

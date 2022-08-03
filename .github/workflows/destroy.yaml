@@ -7,12 +7,13 @@ on:
 
 jobs:
   deploy:
+    environment: development
     runs-on: ubuntu-latest
     steps:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS_DEV }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
     
       - name: Delete resources
@@ -20,12 +21,12 @@ jobs:
         with:
           azPSVersion: "latest"
           inlineScript: |   
-            $rg=Get-AzResourceGroup -name ${{secrets.RESOURCE_GROUP_DEV}} -errorAction SilentlyContinue
+            $rg=Get-AzResourceGroup -name ${{secrets.RESOURCE_GROUP}} -errorAction SilentlyContinue
             if($rg){
-              Remove-AzResourceGroup -name ${{secrets.RESOURCE_GROUP_DEV}} -Force
+              Remove-AzResourceGroup -name ${{secrets.RESOURCE_GROUP}} -Force
             }
             else{
-              write-host "Group ${{secrets.RESOURCE_GROUP_DEV}} was not found"
+              write-host "Group ${{secrets.RESOURCE_GROUP}} was not found"
             }
             
       - name: Purge APIM
@@ -35,7 +36,7 @@ jobs:
           inlineScript: |           
             $token = Get-AzAccessToken   
             $headers= @{Authorization = "Bearer $($token.Token)"}         
-            $apim = (invoke-restmethod -method GET -uri "https://management.azure.com/subscriptions/${{secrets.AZURE_SUBSCRIPTION_ID_DEV}}/providers/Microsoft.ApiManagement/deletedservices?api-version=2021-08-01" -headers $headers).value | select-object id,@{l="resourceid";e={$_.properties.serviceId}}|where-object{$_.resourceId -like "*${{secrets.RESOURCE_GROUP_DEV}}*"} 
+            $apim = (invoke-restmethod -method GET -uri "https://management.azure.com/subscriptions/${{secrets.AZURE_SUBSCRIPTION_ID}}/providers/Microsoft.ApiManagement/deletedservices?api-version=2021-08-01" -headers $headers).value | select-object id,@{l="resourceid";e={$_.properties.serviceId}}|where-object{$_.resourceId -like "*${{secrets.RESOURCE_GROUP}}*"} 
             if($apim){
               $request = @{
                   Method = 'DELETE'
