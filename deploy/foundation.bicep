@@ -1,5 +1,11 @@
-param host_name string
-param cname_value string
+param dnsEntries object = {
+  record: [
+    {
+      hostname: 'www'
+      cname: 'maxam.prod'
+    }
+  ]
+}
 
 module dns 'dns.bicep' = {
   name: 'dns-zones'
@@ -8,10 +14,10 @@ module dns 'dns.bicep' = {
   }
 }
 
-module dns_record 'dns-record.bicep' = {
-  name: 'dns-record-${host_name}'
+module dns_record 'dns-record.bicep' = [for record in dnsEntries.record:{
+  name: 'dns-record-${record.hostname}'
   params:{
-    host_name: host_name
-    cname_value: cname_value
+    host_name: record.hostname
+    cname_value: record.cname
   }
-}
+}]
