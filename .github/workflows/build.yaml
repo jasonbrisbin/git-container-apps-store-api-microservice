@@ -71,7 +71,6 @@ jobs:
         run: echo "::set-output name=image-${{ matrix.services.imageName }}::${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.services.imageName }}:sha-$(git rev-parse --short HEAD)" | tr '[:upper:]' '[:lower:]'
 
   deploy-development:
-    id: deploydevelopment
     environment:
       name: development
       url: https://portal.azure.com/#@jbrisbingmail.onmicrosoft.com/resource/subscriptions/df87dc69-fe6e-4055-a2af-1eab200c4652/resourceGroups/maxam-dev/overview
@@ -128,7 +127,7 @@ jobs:
           $records = @{
             records=@(
               @{
-                hostname="maxam-${{jobs.deploydevelopment.environment}}"
+                hostname="maxam-${{jobs.deploy-development.environment}}"
                 cname="${{steps.deployApps.outputs.nodeFqdn}}""
               }
             )
