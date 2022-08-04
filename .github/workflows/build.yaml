@@ -127,7 +127,7 @@ jobs:
           $records = @{
             records=@(
               @{
-                hostname="maxam-${{jobs.deploydevelopment.environment}}"
+                hostname="maxam-${{deploydevelopment.environment}}"
                 cname="${{steps.deployApps.outputs.nodeFqdn}}""
               }
             )
