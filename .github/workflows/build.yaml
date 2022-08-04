@@ -70,7 +70,7 @@ jobs:
         id: image-tag
         run: echo "::set-output name=image-${{ matrix.services.imageName }}::${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.services.imageName }}:sha-$(git rev-parse --short HEAD)" | tr '[:upper:]' '[:lower:]'
 
-  deploy-development:
+  deploydevelopment:
     environment:
       name: development
       url: https://portal.azure.com/#@jbrisbingmail.onmicrosoft.com/resource/subscriptions/df87dc69-fe6e-4055-a2af-1eab200c4652/resourceGroups/maxam-dev/overview
@@ -127,7 +127,7 @@ jobs:
           $records = @{
             records=@(
               @{
-                hostname="maxam-${{jobs.deploy-development.environment}}"
+                hostname="maxam-${{jobs.deploydevelopment.environment}}"
                 cname="${{steps.deployApps.outputs.nodeFqdn}}""
               }
             )
@@ -135,12 +135,12 @@ jobs:
           $recordsJson = $records|convertto-json
           write-host $recordsJson
 
-  deploy-dns:  
+  deploydns:  
     environment:
       name: production
     runs-on: ubuntu-latest    
     if: false
-    needs: [deploy-development]
+    needs: [deploydevelopment]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
