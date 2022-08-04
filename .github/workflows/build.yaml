@@ -141,7 +141,7 @@ jobs:
           }
           $recordsJson = $records|convertto-json -compress
           write-host $recordsJson
-          "::set-output name=dnsRecords::$recordsJson"
+          Write-Output "::set-output name=dnsRecords::$recordsJson"
 
   deploydns:  
     environment:
