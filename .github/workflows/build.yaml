@@ -96,6 +96,12 @@ jobs:
             az provider register --namespace microsoft.app
             az provider register --namespace microsoft.insights
             az provider register --namespace microsoft.servicelinker
+      
+      - name: Create Resource Group
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az group create -g ${{ secrets.RESOURCE_GROUP }} -l centralus
 
       # Deploy Bicep file
       - name: deploy
@@ -120,6 +126,7 @@ jobs:
           failOnStdErr: false
 
       - name: Define DNS Records
+        id: dns
         shell: pwsh
         env:
           environment: ${{needs.jobs.deploydevelopment.environment}}
@@ -132,8 +139,9 @@ jobs:
               }
             )
           }
-          $recordsJson = $records|convertto-json
+          $recordsJson = $records|convertto-json -compress
           write-host $recordsJson
+          Write-Host "::set-output name=dnsRecords::$recordsJson"
 
   deploydns:  
     environment:
@@ -157,4 +165,4 @@ jobs:
            
             az deployment group create -g ${{ secrets.RESOURCE_GROUP }} -f ./deploy/foundation.bicep \
              -p \
-             dnsEntries="{\"record\":{\"cname\":\"someaddress.com\",\"hostname\":\"maxam-development\"}}"
+             dnsEntries=${{needs.deploydevelopment.outputs.dns.dnsRecords}}
