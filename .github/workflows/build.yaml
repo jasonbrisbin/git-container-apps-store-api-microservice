@@ -118,6 +118,7 @@ jobs:
 
       # Deploy Bicep file
       - name: deploy
+        id: deployApps
         uses: azure/arm-deploy@v1
         with:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION }}
@@ -136,6 +137,16 @@ jobs:
             containerRegistryPassword=${{ secrets.PACKAGES_TOKEN }} 
             deployApim=true
           failOnStdErr: false
+
+      - name: Arm template output
+        shell: pwsh
+        env:
+          goappurl: ${{steps.image-tag.outputs.goFqdn}}
+        run: |
+          write-host "Node url: ${{steps.image-tag.outputs.nodeFqdn}}"
+          write-host "Go url :$($env:goappurl)"
+
+
 
   deploy-dns:
     if: false
