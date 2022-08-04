@@ -141,9 +141,9 @@ jobs:
       - name: Arm template output
         shell: pwsh
         env:
-          goappurl: ${{steps.image-tag.outputs.goFqdn}}
+          goappurl: ${{steps.deployApps.outputs.goFqdn}}
         run: |
-          write-host "Node url: ${{steps.image-tag.outputs.nodeFqdn}}"
+          write-host "Node url: ${{steps.deployApps.outputs.nodeFqdn}}"
           write-host "Go url :$($env:goappurl)"
 
 
