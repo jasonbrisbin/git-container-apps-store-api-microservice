@@ -122,12 +122,12 @@ jobs:
       - name: Define DNS Records
         shell: pwsh
         env:
-          goappurl: ${{steps.deployApps.outputs.goFqdn}}
+          environment: ${{needs.jobs.deploydevelopment.environment}}
         run: |
           $records = @{
             records=@(
               @{
-                hostname="maxam-${{deploydevelopment.environment}}"
+                hostname="maxam-$($env:environment))"
                 cname="${{steps.deployApps.outputs.nodeFqdn}}""
               }
             )
