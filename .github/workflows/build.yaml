@@ -70,10 +70,9 @@ jobs:
         id: image-tag
         run: echo "::set-output name=image-${{ matrix.services.imageName }}::${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.services.imageName }}:sha-$(git rev-parse --short HEAD)" | tr '[:upper:]' '[:lower:]'
 
-  deploydevelopment:
+  deployiac:
     environment:
       name: development
-      url: https://portal.azure.com/#@jbrisbingmail.onmicrosoft.com/resource/subscriptions/df87dc69-fe6e-4055-a2af-1eab200c4652/resourceGroups/maxam-dev/overview
     runs-on: ubuntu-latest
     needs: [build]
     steps:
@@ -128,13 +127,11 @@ jobs:
       - name: Define DNS Records
         id: dns
         shell: pwsh
-        env:
-          environment: dev
         run: |
           $records = @{
             records=@(
               @{
-                hostname="maxam-$($env:environment)"
+                hostname="maxam.${{ secrets.ENVIRONMENT_SHORT }}"
                 cname='${{steps.deployApps.outputs.nodeFqdn}}'
               }
             )
@@ -147,8 +144,7 @@ jobs:
     environment:
       name: production
     runs-on: ubuntu-latest    
-    if: false
-    needs: [deploydevelopment]
+    needs: [deployiac]
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -165,4 +161,4 @@ jobs:
            
             az deployment group create -g ${{ secrets.RESOURCE_GROUP }} -f ./deploy/foundation.bicep \
              -p \
-             dnsEntries=${{needs.deploydevelopment.outputs.dns.dnsRecords}}
+             dnsEntries=${{needs.deployiac.outputs.dns.dnsRecords}}
