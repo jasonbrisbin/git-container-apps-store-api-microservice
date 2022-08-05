@@ -134,14 +134,14 @@ jobs:
           $records = @{
             records=@(
               @{
-                hostname="maxam-$($env:environment))"
-                cname="${{steps.deployApps.outputs.nodeFqdn}}""
+                hostname="maxam-$($env:environment)"
+                cname='${{steps.deployApps.outputs.nodeFqdn}}'
               }
             )
           }
           $recordsJson = $records|convertto-json -compress
           write-host $recordsJson
-          "::set-output name=dnsRecords::$recordsJson"
+          "::set-output name=dnsRecords::'$recordsJson'"
 
   deploydns:  
     environment:
