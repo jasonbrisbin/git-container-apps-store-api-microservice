@@ -129,7 +129,7 @@ jobs:
         id: dns
         shell: pwsh
         env:
-          environment: ${{jobs.deploydevelopment.environment}}
+          environment: dev
         run: |
           $records = @{
             records=@(
