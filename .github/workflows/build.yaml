@@ -141,6 +141,7 @@ jobs:
           "::set-output name=dnsrecords::'$recordsJson'"
     outputs:
       dnsrecords: ${{ steps.dns.outputs.dnsrecords }}
+      testing: thisisatest
   deploydns:  
     environment:
       name: production
@@ -159,7 +160,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            "${{needs.deployiac.outputs.dnsrecords}}"
+            "${{needs.deployiac.outputs.testing}}"
             az deployment group create -g ${{ secrets.RESOURCE_GROUP }} -f ./deploy/foundation.bicep \
              -p \
              dnsEntries=${{needs.deployiac.outputs.dnsrecords}}
