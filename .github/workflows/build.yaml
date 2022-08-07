@@ -138,9 +138,9 @@ jobs:
           }
           $recordsJson = $records|convertto-json -compress
           write-host $recordsJson
-          "::set-output name=dnsRecords::'$recordsJson'"
+          "::set-output name=dnsrecords::'$recordsJson'"
     outputs:
-      dnsRecords: ${{ steps.dns.outputs.dnsRecords }}
+      dnsrecords: ${{ steps.dns.outputs.dnsrecords }}
   deploydns:  
     environment:
       name: production
@@ -159,7 +159,7 @@ jobs:
         uses: azure/CLI@v1
         with:
           inlineScript: |
-            write-output "${{needs.deployiac.outputs.dnsRecords}}"
+            "${{needs.deployiac.outputs.dnsrecords}}"
             az deployment group create -g ${{ secrets.RESOURCE_GROUP }} -f ./deploy/foundation.bicep \
              -p \
-             dnsEntries=${{needs.deployiac.outputs.dnsRecords}}
+             dnsEntries=${{needs.deployiac.outputs.dnsrecords}}
