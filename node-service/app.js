@@ -3,12 +3,14 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+const config = require('config');
 
 var indexRouter = require('./routes/index');
 var ordersRouter = require('./routes/orders');
 var inventoryRouter = require('./routes/inventory');
 
-const appPort = process.env.PORT || 3000; 
+const appPort = config.get('port') || process.env.PORT || 3000;
+
 var app = express();
 
 // view engine setup
