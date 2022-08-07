@@ -139,9 +139,10 @@ jobs:
           $recordsJson = $records|convertto-json -compress
           write-host $recordsJson
           "::set-output name=dnsrecords::$recordsJson"
+          "::set-output name=test::thisisatest"
     outputs:
       dnsrecords: ${{ steps.dns.outputs.dnsrecords }}
-      testing: thisisatest
+      testing: ${{ steps.dns.outputs.test }}
   deploydns:  
     environment:
       name: production

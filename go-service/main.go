@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	dapr "github.com/dapr/go-sdk/client"
 	"github.com/spf13/viper"
@@ -10,6 +11,7 @@ import (
 func main() {
 	viper.SetConfigFile("config.yaml")
 	viper.ReadInConfig()
+
 	a := App{}
 
 	client, err := dapr.NewClient()
@@ -20,10 +22,12 @@ func main() {
 		client,
 	)
 
-	port := viper.Get("port")
-
-	if port == nil {
-		port = "8050"
+	port := viper.GetString("port")
+	if port == "" {
+		port = os.Getenv("PORT")
+		if port == "" {
+			port = "8050"
+		}
 	}
 
 	binding := fmt.Sprintf(":%s", port)

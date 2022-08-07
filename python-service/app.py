@@ -5,11 +5,30 @@ from flask import request, jsonify
 from flask import json
 from flask_cors import CORS
 from dapr.clients import DaprClient
+from vyper import v
 
 logging.basicConfig(level=logging.INFO)
 
 app = flask.Flask(__name__)
 CORS(app)
+
+def update_config():
+    """Updates Flask's config."""
+    return app.config.update(v.all_settings(uppercase_keys=True))
+
+
+v.set_config_name("config")
+v.add_config_path(".")
+v.set_config_type("toml")
+v.read_in_config()
+update_config()
+
+@app.route('/', methods=['GET'])
+def orderAlive():
+    app.logger.info('order service called')
+    resp = jsonify('Order service')
+    resp.status_code = 200
+    return resp
 
 @app.route('/order', methods=['GET'])
 def getOrder():
@@ -61,4 +80,4 @@ def createOrder():
         finally:
             app.logger.info('created order')
 
-app.run(host='0.0.0.0', port=os.getenv('PORT', '5000'))
+app.run(host='0.0.0.0', port=(app.config["PORT"] or os.environ['PORT'] or 5000))
